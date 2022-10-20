@@ -2,9 +2,106 @@ const router = require('express').Router();
 const { Post, User, Comment } = require('../models');
 const withAuth = require('../utils/auth');
 
+
+
 router.get('/', async (req, res) => {
-    res.render('homepage')
+  const postData = await Post.findAll({
+    attributes: [
+      'id',
+      'title',
+      'content',
+      'created_at'
+    ],
+    include: [{
+      model: Comment,
+      attributes: ['id', 'comment_text', 'post_id', 'user_id', 'created_at'],
+      include: {
+        model: User,
+        attributes: ['username']
+      }
+    },
+    {
+      model: User,
+      attributes: ['username']
+    }
+    ]
+  })
+  const posts = postData.map(post => post.get({ plain: true }));
+
+  res.render('homepage', { posts, loggedIn: req.session.loggedIn });
+})
+
+router.get('/login', async (req, res) => {
+  if (req.session.loggedIn) {
+    res.redirect('/');
+    return;
+  }
+  res.render('login');
 });
+
+
+router.get('/post/:id', async (req, res) => {
+  const postData1 = await Post.findOne({
+    where: {
+      id: req.params.id
+    },
+    attributes: [
+      'id',
+      'content',
+      'title',
+      'created_at'
+    ],
+    include: [{
+      model: Comment,
+      attributes: ['id', 'comment_text', 'post_id', 'user_id', 'created_at'],
+      include: {
+        model: User,
+        attributes: ['username']
+      }
+    },
+    {
+      model: User,
+      attributes: ['username']
+    }
+    ]
+  })
+  const post = postData1.get({ plain: true });
+  res.render('comment', { post, loggedIn: req.session.loggedIn });
+
+});
+
+router.get('/posts-comments', async (req, res) => {
+   const postData = await Post.findOne({
+    where: {
+      id: req.params.id
+    },
+    attributes: [
+      'id',
+      'content',
+      'title',
+      'created_at'
+    ],
+    include: [{
+      model: Comment,
+      attributes: ['id', 'comment_text', 'post_id', 'user_id', 'created_at'],
+      include: {
+        model: User,
+        attributes: ['username']
+      }
+    },
+    {
+      model: User,
+      attributes: ['username']
+    }
+    ]
+  })
+
+      const post = postData.get({ plain: true });
+
+      res.render('posts-comments', { post, loggedIn: req.session.loggedIn });
+
+});
+
 
 /* router.get('/project/:id', async (req, res) => {
   try {

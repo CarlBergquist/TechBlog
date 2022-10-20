@@ -7,30 +7,33 @@
   <title>Tech Blog</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+  <link rel="stylesheet" href="/css/style.css">
+
 </head>
 
 <body>
-  <div class="container wrapper">
-    <header class="row">
-      <h1><a class="mg" href="/">Techy Suff</a></h1>
-      <nav>
-        <ul class="navbar list-unstyled">
-          <li><a class="link" href="/">Home</a></li>
-          <li><a class="link" href="/dashboard">Dashboard</a></li>
-          <li><a class="link" href="/" id="logout">Logout</a></li>
-          <li><a class="link" href="/login">Login</a></li>
+  <div class="container-fluid">
+    <header class="row text-bg-dark">
+      <h1><a class="text-decoration-none d-flex justify-content-center m-3" href="/">Techy Stuff</a></h1>
+      <nav class="d-flex navbar navbar-expand-sm bg-primary navbar-dark justify-content-lg-center">
+        <ul class="list-unstyled navbar-nav">
+          <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="/dashboard">Dashboard</a></li>
+          {{#if loggedIn}}
+          <li class="nav-item"><a class="nav-link" href="/" id="logout">Logout</a></li>
+          {{else}}
+          <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
+          {{/if}}
         </ul>
       </nav>
-
-
     </header>
-
     <main>
       {{{ body }}}
     </main>
-
-
   </div>
+  {{#if loggedIn}}
+  <script src="/js/logout.js"></script>
+  {{/if}}
 </body>
 
 </html>
